@@ -87,6 +87,12 @@ const Game = {
     // colisiones genéricas
     // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
    // return this.obstacles.some(obs => (this.player.posX + this.player.width > obs.posX && obs.posX + obs.width > this.player.posX && this.player.posY + this.player.height > obs.posY && obs.posY + obs.height > this.player.posY ))
+    if(this.ball.posY + this.ball.height > this.height){
+      alert("YOU LOSE!!")
+      location.reload();
+      this.gameOver()
+    }
+  
   },
 
   clearObstacles: function() {
