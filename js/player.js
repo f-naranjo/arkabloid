@@ -12,7 +12,7 @@ class Player {
 
             // this.posX0 = this.posx - this.width / 2,
 
-            this.vx = 10;
+            this.vx = 15;
 
         this.keys = {
             LEFT_KEY: playerKeys.LEFT_KEY,
@@ -20,17 +20,13 @@ class Player {
         }
 
         this.setListeners()
+     
 
     }
 
     draw() {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
-        if (this.rightPressed) {
-            this.posX += this.vx;
-        } else if (this.leftPressed) {
-            this.posX -= this.vx;
-        }
     }
 
     move() {
@@ -40,7 +36,40 @@ class Player {
     setListeners() {
         // this.rightPressed = false;
         // this.leftPressed = false;
-       
+
+        // document.addEventListener('keydown', (e) => {
+        //     switch (e.keyCode) {
+        //         case this.keys.LEFT_KEY:
+        //             if (this.posX <= this.leftLimit) {
+        //                 this.leftPressed = false;
+                       
+        //             }
+        //             this.leftPressed = true;
+        //             break;
+
+        //         case this.keys.RIGHT_KEY:
+        //             if (this.posX + this.width >= this.rigthLimit) {
+        //             }
+        //             this.rightPressed = true;
+        //             break;
+        //     }
+
+
+        //     if(this.rightPressed){
+        //         console.log(this.rightPressed)
+        //         this.posX += this.vx;
+        //     }else if(this.leftPressed){
+        //         this.posX -= this.vx;
+        //     }
+           
+
+        // })
+
+      
+
+
+
+
         // document.addEventListener("keydown", keyDownHandler, false);
         // document.addEventListener("keyup", keyUpHandler, false);
 
@@ -65,7 +94,11 @@ class Player {
         //     }
          
         // }
-        
+
+
+
+
+
         document.addEventListener('keydown', (e) => {
             switch (e.keyCode) {
                 case this.keys.LEFT_KEY:

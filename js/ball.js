@@ -5,6 +5,7 @@ class Ball{
         this.height = height
         this.posX = gameWidth/2 - this.width/2
         this.posY = playerPosY - this.height
+        this.posY0 = playerPosY - this.height
         this.playerPoxX = playerPosX
         this.playerPosY = playerPosY
         this.playerWidth = playerWidth
@@ -15,13 +16,12 @@ class Ball{
             left : 0
         }
 
-        this.vx = 3
-        this.vy = 3
+        this.vx = 4
+        this.vy = 4
 
     }
 
         
-
 draw(){
     this.ctx.fillStyle = 'orange';
     this.ctx.fillRect(this.posX, this.posY, this.width, this.height);

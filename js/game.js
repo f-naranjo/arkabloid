@@ -15,11 +15,11 @@ const Game = {
   init: function () {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
-    this.width = window.innerWidth / 2;
-    this.height = window.innerHeight * 0.7;
+    this.width = window.innerWidth*0.9;
+    this.height = window.innerHeight*0.9;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.numberOfBricks = 8;
+    this.numberOfBricks = 15;
     this.brickWidth = this.width / (this.numberOfBricks + 1);
     this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
     this.brickHeight = 15;
@@ -94,12 +94,21 @@ const Game = {
 
   isCollision: function () {
     //colisiones con player
+    //left side
     if (this.ball.posY + this.ball.width > this.player.posY && this.ball.posX > this.player.posX && this.ball.posX + this.ball.width < this.player.posX + this.player.width) {
-      this.ball.vy = -this.ball.vy
+      this.ball.vy = -this.ball.vy*1.05
+      this.ball.vx = +this.ball.vx*1.02
     }
-    // colisiones genéricas
-    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
-    // return this.obstacles.some(obs => (this.player.posX + this.player.width > obs.posX && obs.posX + obs.width > this.player.posX && this.player.posY + this.player.height > obs.posY && obs.posY + obs.height > this.player.posY ))
+
+   //colisiones con bricks
+   // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
+      this.bricks.forEach((brick, idx)=>{
+        if(brick.posX + brick.width > this.ball.posX && this.ball.posX + this.ball.width > brick.posX && brick.posY + brick.height > this.ball.posY && this.ball.posY + this.ball.height > brick.posY){
+          this.bricks.splice(idx, 1)
+          this.ball.vy = -this.ball.vy
+        }
+      })
+
 
     // if(this.ball.posY + this.ball.height > this.height){
     //   alert("YOU LOSE!!")
