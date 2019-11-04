@@ -19,6 +19,11 @@ class Player {
             RIGHT_KEY: playerKeys.RIGHT_KEY
         }
 
+        this.keyState = {
+            keyLeft : false,
+            keyRight : false
+          }
+
         this.setListeners()
      
 
@@ -30,95 +35,33 @@ class Player {
     }
 
     move() {
-
+        if(this.keyState.keyLeft && this.posX > this.leftLimit){
+            this.posX -= this.vx
+          }
+          if(this.keyState.keyRight && this.posX+this.width < this.rigthLimit){
+            this.posX += this.vx}
     }
 
     setListeners() {
-        // this.rightPressed = false;
-        // this.leftPressed = false;
-
-        // document.addEventListener('keydown', (e) => {
-        //     switch (e.keyCode) {
-        //         case this.keys.LEFT_KEY:
-        //             if (this.posX <= this.leftLimit) {
-        //                 this.leftPressed = false;
-                       
-        //             }
-        //             this.leftPressed = true;
-        //             break;
-
-        //         case this.keys.RIGHT_KEY:
-        //             if (this.posX + this.width >= this.rigthLimit) {
-        //             }
-        //             this.rightPressed = true;
-        //             break;
-        //     }
-
-
-        //     if(this.rightPressed){
-        //         console.log(this.rightPressed)
-        //         this.posX += this.vx;
-        //     }else if(this.leftPressed){
-        //         this.posX -= this.vx;
-        //     }
-           
-
-        // })
-
-      
-
-
-
-
-        // document.addEventListener("keydown", keyDownHandler, false);
-        // document.addEventListener("keyup", keyUpHandler, false);
-
-        // function keyDownHandler(e) {
-        //     if(e.keyCode === 37){
-        //         this.rightPressed = true;
-        //         console.log("hola")
-        //     }
-        //     else if(e.keyCode === 39){
-        //         this.leftPressed = true;
-        //     }
-         
-        // }
-
-        // function keyUpHandler(e) {
-        //     if(e.keyCode === 37){
-        //         console.log("adios")
-        //         this.rightPressed = false;
-        //     }
-        //     else if(e.keyCode === 39){
-        //         this.leftPressed = false;
-        //     }
-         
-        // }
-
-
-
-
-
-        document.addEventListener('keydown', (e) => {
-            switch (e.keyCode) {
-                case this.keys.LEFT_KEY:
-                    if (this.posX <= this.leftLimit) {
-                        break;
-                    }
-                    this.posX -= this.vx;
-                    break;
-
-                case this.keys.RIGHT_KEY:
-                    console.log(this.posX)
-                    if (this.posX + this.width >= this.rigthLimit) {
-
-                        break;
-                    }
-                    this.posX += this.vx;
-                    break;
+          document.addEventListener('keydown', (e) => {
+            e.preventDefault();
+            if (e.keyCode === 37) {
+                this.keyState.keyLeft = true;
             }
-        })
+            if (e.keyCode === 39) {
+                this.keyState.keyRight = true;
+            }
+          })
 
+          document.addEventListener('keyup', (e) => {
+            e.preventDefault();
+            if (e.keyCode === 37) {
+                this.keyState.keyLeft = false;
+            }
+            if (e.keyCode === 39) {
+                this.keyState.keyRight = false;
+            }
+          })
 
     }
 

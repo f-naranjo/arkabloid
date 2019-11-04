@@ -19,8 +19,8 @@ const Game = {
       this.height = window.innerHeight * 0.9;
       this.canvas.width = this.width;
       this.canvas.height = this.height;
+      this.startStop();
       
-      this.start();
     },
   
     start: function () {
@@ -45,7 +45,7 @@ const Game = {
       this.background = new Background(this.ctx, this.width, this.height);
       this.player = new Player(this.ctx, 150, 20, this.width, this.height, this.playerKeys);
       this.ball = new Ball(this.ctx, 25, 25, this.width, this.height, this.player.posX, this.player.posY, this.player.width);
-      // this.generateBricksMD()
+      this.generateBricks()
     },
   
     clear: function () {
@@ -56,52 +56,29 @@ const Game = {
       this.background.draw();
       this.player.draw();
       this.ball.draw();
-      this.generateBricksMD()
-      // this.bricks.forEach(brick => brick.draw())
-      // this.bricks[0].forEach(brick => brick.draw())
-      // ScoreBoard.draw(this.score)
-  
-      // for (i = 0; i < this.bricksRows; i++) {
-      //   for (j = 0; j < this.numberOfBricks; j++) {
-      //     console.log(this.bricks[i][j])
-      //     this.bricks[i][j].draw()
-      //     debugger
-          
-        // }
-      // }''
-  
-  
-      
+      this.bricks.forEach(e => e.draw());
     },
   
     moveAll: function () {
       // this.background.move()
       this.player.move()
       this.ball.move()
-      // this.obstacles.forEach(obstacle => obstacle.move())
     },
   
-    generateBricksMD: function () {
+    generateBricks: function () {
+      //parametros básicos del nivel
       this.numberOfBricks = 6;
-      this.bricksRows = 4;
+      this.bricksRows = 3;
       this.brickWidth = this.width / (this.numberOfBricks + 1);
       this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
-      this.brickHeight = 20;
-      this.bricks = new Array(this.bricksRows).fill((new Array(this.numberOfBricks).fill("")))
+      this.brickHeight = 30;
+      this.bricks = []
   
       for (i = 0; i < this.bricksRows; i++) {
-        
         for (j = 0; j < this.numberOfBricks; j++) {
-          this.bricks[i][j] = new Brick(this.ctx, this.brickWidth * j + this.brickGutter * j, this.brickHeight*i + i*15 + 50, this.brickWidth, this.brickHeight, this.width, this.height)
-          this.bricks[i][j].draw()
+          this.bricks.push(new Brick(this.ctx, this.brickWidth * j + this.brickGutter * j, this.brickHeight*i + i*15 + 50, this.brickWidth, this.brickHeight, this.width, this.height))
         }
       }
-  
-      // this.bricksAll = this.bricks.flat()
-      // console.log(this.bricksAll)
-      // this.bricksAll.forEach(brick => brick.draw())
-      
-  
       
     },
   
@@ -111,8 +88,7 @@ const Game = {
     },
   
     isCollision: function () {
-      //   //colisiones con player
-        //left side
+      //colisiones con player
         if (this.ball.posY + this.ball.width > this.player.posY && this.ball.posX > this.player.posX && this.ball.posX + this.ball.width < this.player.posX + this.player.width) {
           this.ball.vy = -this.ball.vy*1.05
           this.ball.vx = +this.ball.vx*1.02
@@ -120,47 +96,47 @@ const Game = {
   
        //colisiones con bricks
        // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
-          // this.bricks.forEach((brick, idx)=>{
-          //   if(brick.posX + brick.width > this.ball.posX && this.ball.posX + this.ball.width > brick.posX && brick.posY + brick.height > this.ball.posY && this.ball.posY + this.ball.height > brick.posY){
-          //     this.bricks.splice(idx, 1)
-          //     this.ball.vy = -this.ball.vy
-          //   }
-          // })
-  
-          //   this.bricks.flat().forEach((brick, idx)=>{
-          //   if(brick.posX + brick.width > this.ball.posX && this.ball.posX + this.ball.width > brick.posX && brick.posY + brick.height > this.ball.posY && this.ball.posY + this.ball.height > brick.posY){
-          //     console.log("se cumplio!")
-          //     this.bricks.splice(idx, 1)
-          //     this.ball.vy = -this.ball.vy
-          //   }
-          // })
-  
-          for (i = 0; i < this.bricksRows; i++) {
-        
-            for (j = 0; j < this.numberOfBricks; j++) {
-              
-              if(this.bricks[i][j].posX + this.bricks[i][j].width > this.ball.posX && this.ball.posX + this.ball.width > this.bricks[i][j].posX && this.bricks[i][j].posY + this.bricks[i][j].height > this.ball.posY && this.ball.posY + this.ball.height > this.bricks[i][j].posY){
-                console.log(i,j)
-                this.bricks[i].splice(0, 1)
-                this.ball.vy = -this.ball.vy
-              }
-              
+            this.bricks.forEach((brick, idx)=>{
+            if(brick.posX + brick.width > this.ball.posX && this.ball.posX + this.ball.width > brick.posX && brick.posY + brick.height > this.ball.posY && this.ball.posY + this.ball.height > brick.posY){
+              this.bricks.splice(idx, 1)
+              this.ball.vy = -this.ball.vy
             }
-          }
-  
-  
-  
-          
-          
-        // if(this.ball.posY + this.ball.height > this.height){
-        //   alert("YOU LOSE!!")
-        //   location.reload();
-        //   this.gameOver()
-        // }
+          })
+
+        if(this.ball.posY + this.ball.height > this.height){
+          alert("YOU LOSE!!")
+          location.reload();
+          this.gameOver()
+        }
+
+
+        if(this.bricks.length === 0 ){
+          alert("YOU WIN!!")
+          location.reload();
+          this.gameOver()
+        }
   
     },
   
     clearObstacles: function () {
-      // this.obstacles = this.obstacles.filter(obstacle => (obstacle.posX >= 0))
-    }
+     
+    },
+
+    startStop: function (){
+      this.switch = false;
+      document.addEventListener('keydown', (e) => {
+        if(e.keyCode === this.playerKeys.SPACE) {
+          if(this.switch === true){
+            this.switch = !this.switch
+            this.gameOver()
+          }else{
+            this.switch = !this.switch
+            this.start()
+          }
+        }
+    })
+      
+  }
+
+
   }
