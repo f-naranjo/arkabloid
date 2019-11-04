@@ -8,8 +8,8 @@ class Player {
             this.rigthLimit = gameWidth,
 
             this.posX = gameWidth / 2 - this.width / 2,
-            this.posY = gameHeigth - 50,
-            this.posY0 = gameHeigth - 50,
+            this.posY = Math.floor(gameHeigth - 50),
+            this.posY0 = Math.floor(gameHeigth - 50),
             this.vy = 1;
             this.gravity = 0.4;
 
@@ -47,7 +47,7 @@ class Player {
         }
 
 
-        if (this.posY <= this.posY0) {
+        if (this.posY < this.posY0) {
             this.posY += this.vy;
             this.vy += this.gravity;
         } else {
