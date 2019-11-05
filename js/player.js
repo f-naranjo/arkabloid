@@ -1,17 +1,23 @@
 class Player {
-    constructor(ctx, width, height, gameWidth, gameHeigth, playerKeys) {
+    constructor(ctx, width, height, gameWidth, gameHeight, playerKeys) {
         this.ctx = ctx;
         this.width = width,
             this.height = height,
-
+            this.gameHeight = gameHeight,
+            this.gameWidth = gameWidth
             this.leftLimit = 0,
             this.rigthLimit = gameWidth,
 
             this.posX = gameWidth / 2 - this.width / 2,
-            this.posY = Math.floor(gameHeigth - 50),
-            this.posY0 = Math.floor(gameHeigth - 50),
+            this.posY = gameHeight - 50,
+            this.posY0 = gameHeight - 50,
+
+
+
             this.vy = 1;
             this.gravity = 0.4;
+
+            this.isHero = false;
 
         // this.posX0 = this.posx - this.width / 2,
 
@@ -30,12 +36,12 @@ class Player {
 
         this.setListeners()
 
-
     }
 
     draw() {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+
     }
 
     move() {
@@ -46,14 +52,13 @@ class Player {
             this.posX += this.vx
         }
 
-
-        if (this.posY < this.posY0) {
+        if(this.posY <= this.posY0) {
             this.posY += this.vy;
             this.vy += this.gravity;
-        } else {
-            this.vy = 0;
+          } else {
+            this.vy = 1;
             this.posY = this.posY0;
-        }
+          }
 
     }
 
@@ -69,11 +74,13 @@ class Player {
             this.keyState.keyRight = true;
         }
         if (e.keyCode === 38) {
+         
             if(this.posY < this.posY0){
-                return false
-            }else {
-            this.posY -= this.vy;
-            this.vy -= 10;}
+                return
+            }
+            this.posY -=this.vy;
+            this.vy -= 10
+           
         }    
     
     })
@@ -88,6 +95,13 @@ class Player {
         }
     }) 
 
+    }
+
+    checkState(){
+        if(this.isHero){ 
+            this.posY = this.gameHeight - 100
+            this.posY0 = this.gameHeight - 100
+        }else return false
     }
 
 }

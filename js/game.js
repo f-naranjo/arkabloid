@@ -32,11 +32,12 @@ const Game = {
 
       this.clear();
       this.drawAll();
-      console.log(this.player.posY)
       this.moveAll();
 
       this.isCollision()
-      this.clearBArrels()
+      this.clearBarrels()
+      this.clearBoosters()
+      this.checks()
 
       if (this.framesCounter % 350 === 0) {
         this.generateBarrels()
@@ -55,6 +56,7 @@ const Game = {
     this.player = new Player(this.ctx, 200, 20, this.width, this.height, this.playerKeys);
     this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY-50, this.player.width);
     this.barrels = []
+    this.boosters = []
     this.generateBricks()
 
   },
@@ -68,7 +70,8 @@ const Game = {
     this.player.draw();
     this.ball.draw();
     this.bricks.forEach(e => e.draw());
-    this.barrels.forEach(e => e.draw())
+    this.barrels.forEach(e => e.draw());
+    this.boosters.forEach(e => e.draw())
   },
 
   moveAll: function () {
@@ -76,12 +79,13 @@ const Game = {
     this.player.move()
     this.ball.move()
     this.barrels.forEach(e => e.move())
+    this.boosters.forEach(e => e.move())
   },
 
   generateBricks: function () {
     //parametros básicos del nivel
-    this.numberOfBricks = 5;
-    this.bricksRows = 3;
+    this.numberOfBricks = 10;
+    this.bricksRows = 4;
     this.brickWidth = this.width / (this.numberOfBricks + 1);
     this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
     this.brickHeight = 30;
@@ -100,17 +104,21 @@ const Game = {
     console.log(this.barrels)
   },
 
+  generateBooster:function (brickPosX, brickPosY, brickWidth, brickHeight){
+    this.boosters.push(new Booster(this.ctx, 30, 30,brickPosX, brickPosY, brickWidth,brickHeight))
+  },
+
 
   gameOver: function () {
     clearInterval(this.interval)
   },
 
   isCollision: function () {
-    //colisiones con player
-    // if (this.ball.posY + this.ball.width > this.player.posY && this.ball.posX > this.player.posX && this.ball.posX + this.ball.width < this.player.posX + this.player.width) {
-    //   this.ball.vy = -this.ball.vy * 1.02
-    //   this.ball.vx = +this.ball.vx * 1.01
-    // }
+    // colisiones con player
+    if (this.ball.posY + this.ball.height> this.player.posY && this.ball.posX + this.ball.width/2 > this.player.posX && this.ball.posX - this.ball.width/2 + this.ball.width < this.player.posX + this.player.width) {
+      this.ball.vy = -this.ball.vy * 1.02
+      this.ball.vx = +this.ball.vx * 1.01
+    }
 
     //colisiones con player V2
     
@@ -157,45 +165,45 @@ const Game = {
   
     //colisiones con player V2.1
     
-    if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) &&
-      Math.floor(this.ball.posX) + Math.floor(this.ball.width) <= Math.floor(this.player.posX) + Math.floor(this.player.width) / 4) {
-        if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
-          this.ball.vy = -this.ball.vy 
-          this.ball.vx = this.ball.vx * 1.05
-          console.log(1)
-        }
+    // if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) &&
+    //   Math.floor(this.ball.posX) + Math.floor(this.ball.width) <= Math.floor(this.player.posX) + Math.floor(this.player.width) / 4) {
+    //     if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
+    //       this.ball.vy = -this.ball.vy 
+    //       this.ball.vx = this.ball.vx * 1.05
+    //       console.log(1)
+    //     }
      
-    }
+    // }
 
-    if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) + Math.floor(this.player.width) / 4 &&
-      Math.floor(this.ball.posX) + Math.floor(this.ball.width) < Math.floor(this.player.posX) + Math.floor(this.player.width) / 2) {
-        if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
-      this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.02
-      console.log(2)
+    // if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) + Math.floor(this.player.width) / 4 &&
+    //   Math.floor(this.ball.posX) + Math.floor(this.ball.width) < Math.floor(this.player.posX) + Math.floor(this.player.width) / 2) {
+    //     if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
+    //   this.ball.vy = -this.ball.vy 
+    //   this.ball.vx = this.ball.vx * 1.02
+    //   console.log(2)
      
-        }
-    }
+    //     }
+    // }
 
-    if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) + Math.floor(this.player.width) / 2 &&
-      Math.floor(this.ball.posX) + Math.floor(this.ball.width) <= Math.floor(this.player.posX) + Math.floor(this.player.width) * 3 / 4) {
-        if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
-      this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.02
-      console.log(3)
-        }
+    // if (Math.floor(this.ball.posX) > Math.floor(this.player.posX) + Math.floor(this.player.width) / 2 &&
+    //   Math.floor(this.ball.posX) + Math.floor(this.ball.width) <= Math.floor(this.player.posX) + Math.floor(this.player.width) * 3 / 4) {
+    //     if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
+    //   this.ball.vy = -this.ball.vy 
+    //   this.ball.vx = this.ball.vx * 1.02
+    //   console.log(3)
+    //     }
      
-    }
+    // }
 
-    if (Math.floor(this.ball.posX) > Math.floor(this.player.width) * 3 / 4 &&
-      Math.floor(this.ball.posX) + Math.floor(this.ball.width) < Math.floor(this.player.posX) + Math.floor(Math.floor(this.player.width))) {
-        if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
-      this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.05
-      console.log(4)
-        }
+    // if (Math.floor(this.ball.posX) > Math.floor(this.player.width) * 3 / 4 &&
+    //   Math.floor(this.ball.posX) + Math.floor(this.ball.width) < Math.floor(this.player.posX) + Math.floor(Math.floor(this.player.width))) {
+    //     if(Math.floor(this.ball.posY) + Math.floor(this.ball.height) > Math.floor(this.player.posY)){
+    //   this.ball.vy = -this.ball.vy 
+    //   this.ball.vx = this.ball.vx * 1.05
+    //   console.log(4)
+    //     }
       
-    }
+    // }
   
     
     //colisiones con bricks
@@ -205,12 +213,19 @@ const Game = {
         this.ball.posX + this.ball.width > brick.posX && 
         brick.posY + brick.height > this.ball.posY && 
         this.ball.posY + this.ball.height > brick.posY) {
-        this.bricks.splice(idx, 1)
+        brick.resistance--
+        if(brick.hasBooster === 1){
+          this.generateBooster(brick.posX, brick.posY, brick.width, brick.height);
+          brick.hasBooster = 0
+        }
+        if(brick.resistance === 0){   
+          this.ball.vy = -this.ball.vy
+          this.bricks.splice(idx, 1)
+          return true
+        }
         this.ball.vy = -this.ball.vy
       }
     })
-
-
 
 
     //colisiones con barrels
@@ -223,27 +238,81 @@ const Game = {
     //   }
     // })
 
+    //colisiones con barrels v2
+
+    this.barrels.forEach((barrel, idx)=> {
+      //si player por debajo de barrel
+      // if(barrel.posY< this.player.posY){
+      //   if(this.player.posX< barrel.posX+ barrel.width || this.player.posX + this.player.width > barrel.posX){
+      //     console.log("GAME OVER")
+      //   }
+      // }
+      //si player por encima de barrel
+        // if (barrel.posY >= this.player.posY + this.player.height &&
+        //   this.player.posX + this.player.width > barrel.posX ||
+        //   this.player.posX < barrel.posX + barrel.width ){
+        //     console.log("FLOTA POR DIO!")
+        //     this.player.posY = barrel.posY - this.player.height
+        //   }
+
+         if (barrel.posY >= this.player.posY + this.player.height &&
+          barrel.posX < this.player.posX + this.player.width &&
+          barrel.width + barrel.posX > this.player.posX){
+            console.log("FLOTA POR DIO!")
+            this.player.posY = barrel.posY - this.player.height
+          }
+          
+    })
+
+
+    //colisiones con boosters
+    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
+    this.boosters.forEach((booster, idx) => {
+      if (booster.posX + booster.width > this.player.posX && this.player.posX + this.player.width > booster.posX && booster.posY + booster.height > this.player.posY && this.player.posY + this.player.height > booster.posY) {
+        this.player.isHero = !this.player.isHero;
+        setTimeout(()=>{
+            this.player.isHero = false;
+            this.player.posY = this.height - 50
+            this.player.posY0 = this.height - 50
+        }, 3000);
+ 
+        this.boosters.splice(idx,1)
+      }
+    })
+
+   // Game WIN Game LOOSE
     if (this.ball.posY + this.ball.height > this.height) {
-      alert("YOU LOSE!!")
-      location.reload();
-      this.gameOver()
+      // alert("YOU LOSE!!")
+      // location.reload();
+      // this.gameOver()
     }
 
-
     if (this.bricks.length === 0) {
-      alert("YOU WIN!!")
-      location.reload();
-      this.gameOver()
+      // alert("YOU WIN!!")
+      // location.reload();
+      // this.gameOver()
     }
 
   },
 
-  clearBArrels: function () {
+  clearBarrels: function () {
     this.barrels.forEach((barrel, idx) => {
       if (barrel.posX > this.width) {
         this.barrels.splice(idx, 1)
       }
     })
+  },
+
+  clearBoosters: function (){
+    this.boosters.forEach((booster, idx) =>{
+      if(booster.posY > this.height){
+        this.boosters.splice(idx,1)
+      }
+    })
+  },
+
+  checks: function(){
+    this.player.checkState()
   },
 
   startStop: function () {
