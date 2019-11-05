@@ -17,7 +17,7 @@ class Brick{
 
     draw(){
         
-        this.ctx.fillStyle = `rgba(255, 165, 0, ${this.resistance*0.35+0.2})`
+        this.ctx.fillStyle = `rgba(211,222,230, ${this.resistance*0.35+0.2})`
         this.ctx.fillRect(this.posX,this.posY,this.width,this.height)
     }
 

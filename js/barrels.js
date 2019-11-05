@@ -16,7 +16,7 @@ class Barrel{
 
 
     draw(){
-        this.ctx.fillStyle = 'red'
+        this.ctx.fillStyle = 'rgb(59,62,64)'
         this.ctx.fillRect(this.posX,this.posY,this.width,this.height)
         
     }

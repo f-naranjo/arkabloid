@@ -23,7 +23,7 @@ class Ball{
 
         
 draw(){
-    this.ctx.fillStyle = 'orange';
+    this.ctx.fillStyle = 'rgb(211,222,230)';
     this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
 }
 

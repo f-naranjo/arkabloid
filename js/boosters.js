@@ -15,7 +15,7 @@ class Booster{
     }
         
 draw(){
-    this.ctx.fillStyle = 'blue';
+    this.ctx.fillStyle = 'rgb(176,185,191)';
     this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
 }
 

@@ -16,7 +16,7 @@ class Player {
 
             this.vy = 1;
             this.gravity = 0.4;
-
+            this.isFloating = false;
             this.isHero = false;
 
         // this.posX0 = this.posx - this.width / 2,
@@ -39,7 +39,7 @@ class Player {
     }
 
     draw() {
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = 'rgb(211,222,230)';
         this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
 
     }
@@ -52,10 +52,10 @@ class Player {
             this.posX += this.vx
         }
 
-        if(this.posY <= this.posY0) {
+        if(this.posY <= this.posY0 && this.isFloating === false) {
             this.posY += this.vy;
             this.vy += this.gravity;
-          } else {
+          } else if(this.isFloating === false) {
             this.vy = 1;
             this.posY = this.posY0;
           }
