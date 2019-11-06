@@ -5,6 +5,8 @@ const Game = {
   height: undefined,
   fps: 60,
   framesCounter: 0,
+  margin : undefined,
+  margin2 : undefined,
   playerKeys: {
     LEFT_KEY: 37,
     ARROW_UP: 38,
@@ -17,12 +19,17 @@ const Game = {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.width = window.innerWidth * 0.9;
-    if(this.width > 1200){
-      this.width = 800;
+    if(this.width > 900){
+      this.width = 900;
     }
     this.height = window.innerHeight * 0.9;
+    if(this.height >900){
+      this.height = 900
+    }
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.margin = 40;
+    this.margin2 = this.margin/2;
     this.startStop();
 
   },
@@ -32,6 +39,7 @@ const Game = {
 
     this.interval = setInterval(() => {
       this.framesCounter++;
+     
 
       this.clear();
       this.drawAll();
@@ -42,22 +50,22 @@ const Game = {
       this.clearBoosters()
       this.checks()
 
-      // if (this.framesCounter % 1200 === 0) {
-      //   this.generateBarrels()
-      // }
+    
       if (this.framesCounter%400 === 0 && this.framesCounter%500 !== 0 && this.framesCounter%600 !== 0) {
         this.generateBarrels()
       }
-      //   if(this.framesCounter % 100 === 0) this.score++;
-      //   if(this.isCollision()) this.gameOver()
+      
       if (this.framesCounter > 1000) this.framesCounter = 0;
     }, 1000/this.fps)
   },
 
   reset: function () {
-    this.background = new Background(this.ctx, this.width, this.height);
+    this.background = new Background(this.ctx, this.width, this.height,this.margin, this.margin2);
     this.player = new Player(this.ctx, 150, 20, this.width, this.height, this.playerKeys);
     this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY-50, this.player.width);
+    this.ballFollowerY = new PosRef(this.ctx);
+    this.ballFollowerX = new PosRef(this.ctx);
+    this.playerFollowerX = new PosRef(this.ctx);
     this.barrels = []
     this.boosters = []
     this.generateBricks()
@@ -72,6 +80,9 @@ const Game = {
     this.background.draw();
     this.player.draw();
     this.ball.draw();
+    this.ballFollowerY.draw(this.margin2+2, this.ball.posY+this.ball.height/2, this.margin2+16,this.ball.posY+this.ball.height/2);
+    this.ballFollowerX.draw(this.ball.posX+this.ball.width/2, this.margin2+2, this.ball.posX+this.ball.width/2, this.margin2+16);
+    this.ballFollowerX.draw(this.player.posX+this.player.width/2-8,this.margin2+10,this.player.posX+this.player.width/2+8,this.margin2+10);
     this.bricks.forEach(e => e.draw());
     this.barrels.forEach(e => e.draw());
     this.boosters.forEach(e => e.draw())
@@ -91,7 +102,7 @@ const Game = {
     this.bricksRows = 2;
     this.brickWidth = this.width / (this.numberOfBricks + 1);
     this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
-    this.brickHeight = 30;
+    this.brickHeight = 20;
     this.bricks = []
 
     for (i = 0; i < this.bricksRows; i++) {

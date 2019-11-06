@@ -17,8 +17,13 @@ class Brick{
 
     draw(){
         
-        this.ctx.fillStyle = `rgba(211,222,230, ${this.resistance*0.35+0.2})`
+        this.ctx.fillStyle = `rgba(255,255,255, ${this.resistance*0.15})`
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = 'rgba(255,255,255,1)'
+        this.ctx.strokeRect(this.posX,this.posY,this.width,this.height)
         this.ctx.fillRect(this.posX,this.posY,this.width,this.height)
+
+
     }
 
 
