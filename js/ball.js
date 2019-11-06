@@ -23,8 +23,16 @@ class Ball{
 
         
 draw(){
-    this.ctx.fillStyle = 'rgb(211,222,230)';
-    this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+    // this.ctx.fillStyle = 'rgb(211,222,230)';
+    // this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+
+    this.ctx.beginPath();
+    this.ctx.arc(this.posX+this.height/2,this.posY+this.height/2, this.height/2,0,Math.PI*2)
+    this.ctx.fillStyle = 'rgba(255,255,255,0.4';
+    this.ctx.fill();
+    this.ctx.stroke()
+    this.ctx.closePath()
+
 }
 
 move(){

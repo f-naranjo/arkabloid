@@ -7,6 +7,8 @@ const Game = {
   framesCounter: 0,
   margin : undefined,
   margin2 : undefined,
+  playableWidth: undefined,
+  palaybleHeight: undefined,
   playerKeys: {
     LEFT_KEY: 37,
     ARROW_UP: 38,
@@ -30,6 +32,8 @@ const Game = {
     this.canvas.height = this.height;
     this.margin = 40;
     this.margin2 = this.margin/2;
+    this.playableWidth = this.width - this.margin*2
+    this.playableHeight = this.height - this.margin*2
     this.startStop();
 
   },
@@ -48,7 +52,7 @@ const Game = {
       this.isCollision()
       this.clearBarrels()
       this.clearBoosters()
-      this.checks()
+      this.checkStates()
 
     
       if (this.framesCounter%400 === 0 && this.framesCounter%500 !== 0 && this.framesCounter%600 !== 0) {
@@ -89,7 +93,7 @@ const Game = {
   },
 
   moveAll: function () {
-    // this.background.move()
+
     this.player.move()
     this.ball.move()
     this.barrels.forEach(e => e.move())
@@ -118,7 +122,7 @@ const Game = {
   },
 
   generateBooster:function (brickPosX, brickPosY, brickWidth, brickHeight){
-    this.boosters.push(new Booster(this.ctx, 20, 20,brickPosX, brickPosY, brickWidth,brickHeight))
+    this.boosters.push(new Booster(this.ctx, 30, 30,brickPosX, brickPosY, brickWidth,brickHeight))
   },
 
 
@@ -127,55 +131,7 @@ const Game = {
   },
 
   isCollision: function () {
-    // colisiones con player
-    // if (this.ball.posY + this.ball.height> this.player.posY && this.ball.posX + this.ball.width/2 > this.player.posX && this.ball.posX - this.ball.width/2 + this.ball.width < this.player.posX + this.player.width) {
-    //   this.ball.vy = -this.ball.vy * 1.02
-    //   this.ball.vx = +this.ball.vx * 1.01
-    // }
 
-    //colisiones con player V2
-    
-    // if (this.ball.posX + this.ball.width > this.player.posX &&
-    //   this.ball.posX + this.ball.width <= this.player.posX + this.player.width / 4) {
-    //     if(this.ball.posY + this.ball.height > this.player.posY){
-    //       console.log(1)
-    //       this.ball.vy = -this.ball.vy 
-    //       this.ball.vx = this.ball.vx * 1.05
-    //       return false
-    //     }
-     
-    // }
-
-    // if (this.ball.posX > this.player.posX + this.player.width / 4 &&
-    //   this.ball.posX + this.ball.width < this.player.posX + this.player.width / 2) {
-    //     if(this.ball.posY + this.ball.height > this.player.posY){
-    //   this.ball.vy = -this.ball.vy 
-    //   this.ball.vx = this.ball.vx * 1.02
-    //   console.log(2)
-    //   return false
-    //     }
-    // }
-
-    // if (this.ball.posX > this.player.posX + this.player.width / 2 &&
-    //   this.ball.posX + this.ball.width <= this.player.posX + this.player.width * 3 / 4) {
-    //     if(this.ball.posY + this.ball.height > this.player.posY){
-    //   this.ball.vy = -this.ball.vy 
-    //   this.ball.vx = this.ball.vx * 1.02
-    //   console.log(3)
-    //     }
-    //   return false
-    // }
-
-    // if (this.ball.posX > this.player.posX + this.player.width * 3 / 4 &&
-    //   this.ball.posX + this.ball.width < this.player.posX + this.player.width) {
-    //     if(this.ball.posY + this.ball.height > this.player.posY){
-    //   this.ball.vy = -this.ball.vy 
-    //   this.ball.vx = this.ball.vx * 1.05
-    //   console.log(4)
-    //     }
-    //   return false
-    // }
-  
        //colisiones con player V3
     
     if (this.ball.posX + this.ball.width/2 > this.player.posX &&
@@ -221,7 +177,7 @@ const Game = {
   
     
     //colisiones con bricks
-    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
+
     this.bricks.forEach((brick, idx) => {
       if (brick.posX + brick.width > this.ball.posX && 
         this.ball.posX + this.ball.width > brick.posX && 
@@ -241,16 +197,6 @@ const Game = {
       }
     })
 
-
-    //colisiones con barrels
-    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
-    // this.barrels.forEach((brick, idx) => {
-    //   if (brick.posX + brick.width > this.player.posX && this.player.posX + this.player.width > brick.posX && brick.posY + brick.height > this.player.posY && this.player.posY + this.player.height > brick.posY) {
-    //     alert("YOU LOSE!!")
-    //     location.reload();
-    //     this.gameOver()
-    //   }
-    // })
 
     //colisiones con barrels v2
 
@@ -280,7 +226,7 @@ const Game = {
 
 
     //colisiones con boosters
-    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
+    
     this.boosters.forEach((booster, idx) => {
       if (booster.posX + booster.width > this.player.posX && this.player.posX + this.player.width > booster.posX && booster.posY + booster.height > this.player.posY && this.player.posY + this.player.height > booster.posY) {
         this.player.isHero = !this.player.isHero;
@@ -325,7 +271,7 @@ const Game = {
     })
   },
 
-  checks: function(){
+  checkStates: function(){
     this.player.checkState()
   },
 

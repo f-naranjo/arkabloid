@@ -39,8 +39,29 @@ class Player {
     }
 
     draw() {
-        this.ctx.fillStyle = 'rgb(211,222,230)';
-        this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+        this.ctx.beginPath();
+        this.ctx.arc(this.posX+this.width-this.height/2,this.posY+this.height/2,this.height/2,Math.PI*1.5,Math.PI*0.5)
+        this.ctx.fillStyle = 'rgba(255,255,255,0.2';
+        this.ctx.fill();
+        this.ctx.stroke()
+        this.ctx.closePath()
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.posX+this.height/2,this.posY)
+        this.ctx.lineTo(this.posX+this.width-this.height/2,this.posY)
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.posX+this.height/2,this.posY+this.height)
+        this.ctx.lineTo(this.posX+this.width-this.height/2,this.posY+this.height)
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.fillRect(this.posX+this.height/2, this.posY, this.width-this.height, this.height);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.arc(this.posX+this.height/2,this.posY+this.height/2,this.height/2,Math.PI*1.5,Math.PI*0.5,true)
+        this.ctx.fillStyle = 'rgba(255,255,255,0.2';
+        this.ctx.fill();
+        this.ctx.stroke()
+        this.ctx.closePath()
 
     }
 
