@@ -1,19 +1,20 @@
 class Ball{
-    constructor(ctx, width, height, gameWidth, gameHeigth, playerPosX ,playerPosY, playerWidth){
+    constructor(ctx, width, height, gameWidth, gameHeigth, playerPosX ,playerPosY, playerWidth,margin){
         this.ctx = ctx
         this.width = width
         this.height = height
+        this.margin = margin
         this.posX = gameWidth/2 - this.width/2
-        this.posY = playerPosY - this.height
+        this.posY = gameHeigth/2
         this.posY0 = playerPosY - this.height
         this.playerPoxX = playerPosX
         this.playerPosY = playerPosY
         this.playerWidth = playerWidth
         this.boundarys = {
-            top : 0,
-            rigth : gameWidth,
-            bottom: gameHeigth,
-            left : 0
+            top : this.margin,
+            rigth : gameWidth-this.margin,
+            bottom: gameHeigth-this.margin,
+            left : this.margin
         }
 
         this.vx = 3

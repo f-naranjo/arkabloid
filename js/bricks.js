@@ -1,5 +1,5 @@
 class Brick{
-    constructor(ctx, posX, posY, width, height, gameWidth, gameHeight,){
+    constructor(ctx, posX, posY, width, height){
         this.ctx = ctx,
         
         this.posX = posX,
@@ -8,9 +8,8 @@ class Brick{
         this.height = height,
         this.resistance = Math.floor(Math.random() * 3 + 1 ),
         this.hits = 0,
-        this.hasBooster = Math.floor(Math.random() * 2 + 1 ),
-        this.gameWidth = gameWidth,
-        this.gameHeight = gameHeight
+        this.hasBooster = Math.floor(Math.random() * 2 + 1 )
+
 
     }
 

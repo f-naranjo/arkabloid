@@ -5,6 +5,8 @@ const Game = {
   height: undefined,
   fps: 60,
   framesCounter: 0,
+  livesCounter:0,
+  bricksCounter:0,
   margin : undefined,
   margin2 : undefined,
   playableWidth: undefined,
@@ -30,10 +32,10 @@ const Game = {
     }
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.margin = 40;
+    this.margin = 60;
     this.margin2 = this.margin/2;
-    this.playableWidth = this.width - this.margin*2
-    this.playableHeight = this.height - this.margin*2
+    this.playableWidth = this.width - this.margin
+    this.playableHeight = this.height - this.margin
     this.startStop();
 
   },
@@ -43,7 +45,7 @@ const Game = {
 
     this.interval = setInterval(() => {
       this.framesCounter++;
-     
+     console.log(this.framesCounter)
 
       this.clear();
       this.drawAll();
@@ -65,11 +67,12 @@ const Game = {
 
   reset: function () {
     this.background = new Background(this.ctx, this.width, this.height,this.margin, this.margin2);
-    this.player = new Player(this.ctx, 150, 20, this.width, this.height, this.playerKeys);
-    this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY-50, this.player.width);
+    this.player = new Player(this.ctx, 150, 20, this.playableWidth, this.playableHeight, this.playerKeys,this.margin);
+    this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY-50, this.player.width,this.margin);
     this.ballFollowerY = new PosRef(this.ctx);
     this.ballFollowerX = new PosRef(this.ctx);
     this.playerFollowerX = new PosRef(this.ctx);
+    this.gameInfo = new Gameinfo(this.ctx, this.width, this.height)
     this.barrels = []
     this.boosters = []
     this.generateBricks()
@@ -89,7 +92,8 @@ const Game = {
     this.ballFollowerX.draw(this.player.posX+this.player.width/2-8,this.margin2+10,this.player.posX+this.player.width/2+8,this.margin2+10);
     this.bricks.forEach(e => e.draw());
     this.barrels.forEach(e => e.draw());
-    this.boosters.forEach(e => e.draw())
+    this.boosters.forEach(e => e.draw());
+    this.gameInfo.draw(this.framesCounter,this.livesCounter, this.bricksCounter, this.ball.posX, this.ball.posY);
   },
 
   moveAll: function () {
@@ -102,23 +106,23 @@ const Game = {
 
   generateBricks: function () {
     //parametros básicos del nivel
-    this.numberOfBricks = 10;
-    this.bricksRows = 2;
-    this.brickWidth = this.width / (this.numberOfBricks + 1);
+    this.numberOfBricks = 8;
+    this.bricksRows = 4;
+    this.brickWidth = (this.playableWidth-(this.margin*2)) / (this.numberOfBricks+1.6);
     this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
     this.brickHeight = 20;
     this.bricks = []
 
     for (i = 0; i < this.bricksRows; i++) {
       for (j = 0; j < this.numberOfBricks; j++) {
-        this.bricks.push(new Brick(this.ctx, this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 50, this.brickWidth, this.brickHeight, this.width, this.height))
+        this.bricks.push(new Brick(this.ctx, (this.margin*2) + this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 100, this.brickWidth, this.brickHeight))
       }
     }
 
   },
 
   generateBarrels: function () {
-    this.barrels.push(new Barrel(this.ctx, 0, this.height - 60, 60, 60, this.width, this.height))
+    this.barrels.push(new Barrel(this.ctx, 0, this.playableHeight - 62, 60, 60, this.playableWidth, this.playableHeight))
   },
 
   generateBooster:function (brickPosX, brickPosY, brickWidth, brickHeight){
@@ -139,7 +143,7 @@ const Game = {
         if(this.ball.posY + this.ball.height > this.player.posY){
           console.log(1)
           this.ball.vy = -this.ball.vy 
-          this.ball.vx = this.ball.vx * 1.05
+          this.ball.vx = this.ball.vx * 1.03
           return false
         }
      
@@ -149,7 +153,7 @@ const Game = {
       this.ball.posX + this.ball.width/2 < this.player.posX + this.player.width / 2) {
         if(this.ball.posY + this.ball.height > this.player.posY){
       this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.02
+      this.ball.vx = this.ball.vx * 1.01
       console.log(2)
       return false
         }
@@ -159,7 +163,7 @@ const Game = {
       this.ball.posX + this.ball.width/2 <= this.player.posX + this.player.width * 3 / 4) {
         if(this.ball.posY + this.ball.height > this.player.posY){
       this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.02
+      this.ball.vx = this.ball.vx * 1.01
       console.log(3)
         }
       return false
@@ -169,7 +173,7 @@ const Game = {
       this.ball.posX + this.ball.width/2 < this.player.posX + this.player.width) {
         if(this.ball.posY + this.ball.height > this.player.posY){
       this.ball.vy = -this.ball.vy 
-      this.ball.vx = this.ball.vx * 1.05
+      this.ball.vx = this.ball.vx * 1.03
       console.log(4)
         }
       return false
@@ -219,7 +223,7 @@ const Game = {
           barrel.posX < this.player.posX + this.player.width &&
           barrel.width + barrel.posX > this.player.posX){
             this.player.isFloating = true
-            this.player.posY = barrel.posY - this.player.height
+            this.player.posY = barrel.posY - this.player.height -2
           }else this.player.isFloating = false 
           
     })
@@ -232,8 +236,8 @@ const Game = {
         this.player.isHero = !this.player.isHero;
         setTimeout(()=>{
             this.player.isHero = false;
-            this.player.posY = this.height - 50
-            this.player.posY0 = this.height - 50
+            this.player.posY = this.playableHeight - 50
+            this.player.posY0 = this.playableHeight - 50
         }, 3000);
  
         this.boosters.splice(idx,1)

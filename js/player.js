@@ -1,16 +1,18 @@
 class Player {
-    constructor(ctx, width, height, gameWidth, gameHeight, playerKeys) {
+    constructor(ctx, width, height, gameWidth, gameHeight, playerKeys,margin) {
         this.ctx = ctx;
         this.width = width,
             this.height = height,
             this.gameHeight = gameHeight,
             this.gameWidth = gameWidth
-            this.leftLimit = 0,
+            this.margin = margin,
+            this.leftLimit = this.margin,
             this.rigthLimit = gameWidth,
+            
 
             this.posX = gameWidth / 2 - this.width / 2,
-            this.posY = gameHeight - 50,
-            this.posY0 = gameHeight - 50,
+            this.posY = gameHeight- 50,
+            this.posY0 = gameHeight- 50,
 
 
 
@@ -21,7 +23,7 @@ class Player {
 
         // this.posX0 = this.posx - this.width / 2,
 
-        this.vx = 10;
+        this.vx = 8;
 
         this.keys = {
             LEFT_KEY: playerKeys.LEFT_KEY,
@@ -120,8 +122,8 @@ class Player {
 
     checkState(){
         if(this.isHero){ 
-            this.posY = this.gameHeight - 100
-            this.posY0 = this.gameHeight - 100
+            this.posY = this.gameHeight - 90
+            this.posY0 = this.gameHeight - 90
         }else return false
     }
 
