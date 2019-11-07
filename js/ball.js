@@ -17,8 +17,8 @@ class Ball{
             left : this.margin
         }
 
-        this.vx = 3
-        this.vy = 3
+        this.vx = 4
+        this.vy = 4
 
     }
 

@@ -44,6 +44,9 @@ const Game = {
   start: function () {
     this.reset()
 
+
+
+
     this.interval = setInterval(() => {
       this.framesCounter++;
 
@@ -142,6 +145,7 @@ const Game = {
     if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 > Math.min(this.player.posX, this.player.posX - this.player.vx) &&
       Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4) {
       if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+        this.posCorrection()
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -155,6 +159,7 @@ const Game = {
       if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4 &&
         Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2) {
         if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+          this.posCorrection()
           this.ball.vy = -this.ball.vy
           if (this.ball.vx < 9.5) {
             if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -173,6 +178,7 @@ const Game = {
         if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2 &&
           Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4) {
           if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+            this.posCorrection()
             this.ball.vy = -this.ball.vy
             if (this.ball.vx < 9.5) {
               if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -190,6 +196,7 @@ const Game = {
           if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4 &&
             Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width) {
             if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+              this.posCorrection()
               this.ball.vy = -this.ball.vy
               if (this.ball.vx < 9.5) {
                 if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -306,6 +313,10 @@ const Game = {
           checkStates: function() {
             this.player.checkState()
             this.bricksLeft = this.bricks.length
+          },
+
+          posCorrection: function(){
+            this.ball.posY = this.player.posY-this.ball.height
           },
 
           startStop: function () {
