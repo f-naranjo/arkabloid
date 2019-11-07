@@ -19,16 +19,8 @@ const Game = {
     SPACE: 32,
   },
   score: 0,
-  numberOfBricks : 3,
-  bricksRows : 1,
-  // confLevels = [
-  //   {numberOfBricks: 1, bricksRows: 1},
-  //   {numberOfBricks: 1, bricksRows: 2},
-  //   {numberOfBricks: 1, bricksRows: 3},
-  //   {numberOfBricks: 1, bricksRows: 4},
-  //   {numberOfBricks: 1, bricksRows: 5},
-  // ],
-  // level = confLevels[0]
+  level: 0,
+  gameInterval:undefined,
 
 
   init: function () {
@@ -50,55 +42,50 @@ const Game = {
     this.playableHeight = this.height - this.margin
     this.livesCounter = 3;
     this.loadScreen = true;
-    this.startStop();
-    this.reset()
-  
+    this.reset();
+    this.gameControl("welcome");
+
   },
 
   start: function () {
-    
-      clearInterval(this.intervalScreens)
-      this.interval = setInterval(() => {
-        this.framesCounter++;
-        this.clear();
-        this.drawAll();
-        this.moveAll();
 
-        this.isCollision();
-        this.clearBarrels();
-        this.clearBoosters();
-        this.checkStates();
+    clearInterval(this.intervalScreens)
+    this.interval = setInterval(() => {
+      this.framesCounter++;
+      this.clear();
+      this.drawAll();
+      this.moveAll();
 
-        if (this.framesCounter % 400 === 0 && this.framesCounter % 500 !== 0 && this.framesCounter % 600 !== 0) {
-          this.generateBarrels()
-        }
+      this.isCollision();
+      this.clearBarrels();
+      this.clearBoosters();
+      this.checkStates();
 
-        if (this.framesCounter > 1000) this.framesCounter = 0;
+      if (this.framesCounter % 400 === 0 && this.framesCounter % 500 !== 0 && this.framesCounter % 600 !== 0) {
+        this.generateBarrels()
+      }
 
-        
-      }, 1000 / this.fps)
-    
+      if (this.framesCounter > 1000) this.framesCounter = 0;
+
+    }, 1000 / this.fps)
+
   },
 
   reset: function () {
     this.background = new Background(this.ctx, this.width, this.height, this.margin, this.margin2);
-    this.player = new Player(this.ctx, 150, 20, this.playableWidth, this.playableHeight, this.playerKeys, this.margin);
-    this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY - 50, this.player.width, this.margin);
     this.ballFollowerY = new PosRef(this.ctx);
     this.ballFollowerX = new PosRef(this.ctx);
     this.playerFollowerX = new PosRef(this.ctx);
     this.gameInfo = new Gameinfo(this.ctx, this.width, this.height)
-    this.loadScreens = new AllScreens(this.ctx,this.width, this.height,this.background)
+    this.loadScreens = new AllScreens(this.ctx, this.width, this.height, this.background)
+  },
+
+  resetStage: function (level) {
+    this.player = new Player(this.ctx, 150, 20, this.playableWidth, this.playableHeight, this.playerKeys, this.margin);
+    this.ball = new Ball(this.ctx, 20, 20, this.width, this.height, this.player.posX, this.player.posY - 50, this.player.width, this.margin);
     this.barrels = []
     this.boosters = []
-    this.generateBricks()
-
-  },
-  resetStage: function(){
-    this.briks = []
-    // this.numberOfBricks = ;
-    this.bricksRows = 4;
-    this.generateBricks();
+    this.generateBricks(level);
     this.start()
   },
 
@@ -126,19 +113,52 @@ const Game = {
     this.boosters.forEach(e => e.move())
   },
 
-  generateBricks: function () {
-    //parametros básicos del nivel
-    
-    this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
-    this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
-    this.brickHeight = 20;
-    this.bricks = []
+  generateBricks: function (level) {
+    switch (level) {
+      case 0:
+        this.bricksRows = 2;
+        this.numberOfBricks = 5;
+        this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
+        this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
+        this.brickHeight = 20;
+        this.bricks = []
+        for (i = 0; i < this.bricksRows; i++) {
+          for (j = 0; j < this.numberOfBricks; j++) {
+            this.bricks.push(new Brick(this.ctx, (this.margin * 2) + this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 100, this.brickWidth, this.brickHeight))
+          }
+        }
+        break;
+      case 1:
+        this.bricksRows = 3;
+        this.numberOfBricks = 6;
+        this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
+        this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
+        this.brickHeight = 20;
+        this.bricks = []
 
-    for (i = 0; i < this.bricksRows; i++) {
-      for (j = 0; j < this.numberOfBricks; j++) {
-        this.bricks.push(new Brick(this.ctx, (this.margin * 2) + this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 100, this.brickWidth, this.brickHeight))
-      }
+        for (i = 0; i < this.bricksRows; i++) {
+          for (j = 0; j < this.numberOfBricks; j++) {
+            this.bricks.push(new Brick(this.ctx, (this.margin * 2) + this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 100, this.brickWidth, this.brickHeight))
+          }
+        }
+        break;
+      case 2:
+        this.bricksRows = 5;
+        this.numberOfBricks = 7;
+        this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
+        this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
+        this.brickHeight = 20;
+        this.bricks = []
+        for (i = 0; i < this.bricksRows; i++) {
+          for (j = 0; j < this.numberOfBricks; j++) {
+            this.bricks.push(new Brick(this.ctx, (this.margin * 2) + this.brickWidth * j + this.brickGutter * j, this.brickHeight * i + i * 15 + 100, this.brickWidth, this.brickHeight))
+          }
+        }
+        break;
     }
+
+
+
 
   },
 
@@ -150,11 +170,9 @@ const Game = {
     this.boosters.push(new Booster(this.ctx, 30, 30, brickPosX, brickPosY, brickWidth, brickHeight))
   },
 
-
-  gameOver: function () {
-    clearInterval(this.interval)
+  posFix: function () {
+    this.ball.posY = this.player.posY - this.ball.height
   },
-
 
   isCollision: function () {
 
@@ -163,7 +181,7 @@ const Game = {
     if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 > Math.min(this.player.posX, this.player.posX - this.player.vx) &&
       Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4) {
       if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-        this.posCorrection()
+        this.posFix()
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -179,7 +197,7 @@ const Game = {
     if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4 &&
       Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2) {
       if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-        this.posCorrection()
+        this.posFix()
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -198,7 +216,7 @@ const Game = {
     if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2 &&
       Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4) {
       if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-        this.posCorrection()
+        this.posFix()
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -216,7 +234,7 @@ const Game = {
     if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4 &&
       Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width) {
       if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-        this.posCorrection()
+        this.posFix()
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
@@ -335,51 +353,97 @@ const Game = {
   checkStates: function () {
     this.player.checkState()
     this.bricksLeft = this.bricks.length
-    if(this.bricks.length===0){
+    if (this.bricks.length === 0) {
+      if(this.level>3){
       clearInterval(this.interval)
-      this.ifScreens("nextLevel")
+      this.gameControl("youWin")
+      }else{
+      clearInterval(this.interval)
+      this.gameControl("nextLevel")}
+    }
+
+    if (this.livesCounter<0){
+      clearInterval(this.interval)
+      this.gameControl("gameOver")
     }
   },
 
-  posCorrection: function () {
-    this.ball.posY = this.player.posY - this.ball.height
-  },
 
-  startStop: function () {
-    this.switch = false;
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.keyCode === this.playerKeys.SPACE) {
-        if (this.switch === true) {
-          this.switch = !this.switch
-          this.ifScreens("nextLevel") 
-         
-         
-        } else {
-          this.switch = !this.switch
-          this.start()
-         
-        }
-      }
-    })
+  //Game control (Screens&Levels)
 
-  },
+  gameControl: function (screen) {
+    clearInterval(this.interval);
+    switch (screen) {
+      case "welcome":
+        document.addEventListener('keydown', (e) => {
+          e.preventDefault();
+          if (e.keyCode === 13) {
+            this.resetStage(this.level)
+            clearInterval(this.intervalScreens)
+          }
+        })
 
+        this.intervalScreens = setInterval(() => {
+          this.clear();
+          this.loadScreens.draw("welcome");
+        }, 1000 / this.fps)
+        break;
+    }
 
+    switch (screen) {
+      case "gameOver":
+        document.addEventListener('keydown', (e) => {
+          e.preventDefault();
+          if (e.keyCode === 13) {
+            clearInterval(this.interval);
+            this.init()
+          }
+        })
 
-  //Screen Loads
-  ifScreens: function(screen) {
-    clearInterval(this.interval)
-    setTimeout(()=>{
-      clearInterval(this.intervalScreens)
-      this.resetStage()
-    },3000)
-    this.intervalScreens = setInterval(() => {
-        this.clear();
-        this.loadScreens.draw(screen);
-      }, 1000 / this.fps)
-  },
+        this.intervalScreens = setInterval(() => {
+          this.clear();
+          this.loadScreens.draw("gameOver");
+        }, 1000 / this.fps)
+        break;
+    }
 
+    switch (screen) {
+      case "nextLevel":
+        this.level++
+        document.addEventListener('keydown', (e) => {
+          e.preventDefault();
+          if (e.keyCode === 13) {
+            clearInterval(this.interval);
+            clearInterval(this.intervalScreens)
+            this.resetStage(this.level)
+          }
+        })
+
+        this.intervalScreens = setInterval(() => {
+          this.clear();
+          this.loadScreens.draw("nextLevel");
+        }, 1000 / this.fps)
+        break;
+    }
+
+    switch (screen) {
+      case "youWin":
+        document.addEventListener('keydown', (e) => {
+          e.preventDefault();
+          if (e.keyCode === 13) {
+            clearInterval(this.interval);
+            this.init()
+          }
+        })
+
+        this.intervalScreens = setInterval(() => {
+          this.clear();
+          this.loadScreens.draw("youWin");
+        }, 1000 / this.fps)
+        break;
+    }
+
+  }
 
 
 }
