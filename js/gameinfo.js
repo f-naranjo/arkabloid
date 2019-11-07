@@ -5,10 +5,14 @@ class Gameinfo{
         this.height = globalHeight
     }
         
-draw(framesCounter, livesCounter, bricksCounter, ballPosX, ballPosY){
+draw(framesCounter, livesCounter, bricksCounter, bricksLeft, ballPosX, ballPosY){
+    // this.ctx.font = "12px Arial";
+    // this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    // this.ctx.fillText(`Time: ${Math.floor(framesCounter/100)}`, this.width-80, 20);
+
     this.ctx.font = "12px Arial";
     this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    this.ctx.fillText(`Score: ${Math.floor(framesCounter/100)}`, this.width-80, 20);
+    this.ctx.fillText(`Bricks left: ${bricksLeft}`, this.width-110, 20);
   
 
     this.ctx.font = "12px Arial";

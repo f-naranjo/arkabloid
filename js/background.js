@@ -20,7 +20,7 @@ class Background {
   draw() {
 
     //General Colors and Frame
-    this.ctx.fillStyle = 'rgba(47,88,170,1)';
+    this.ctx.fillStyle = this.blue;
     this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.stroke();
   
@@ -28,7 +28,7 @@ class Background {
     this.ctx.fillRect(this.margin2, this.margin2, this.width-this.margin, this.height-this.margin);
     this.ctx.stroke();
 
-    this.ctx.fillStyle = 'rgba(47,88,170,1)';
+    this.ctx.fillStyle = this.blue;
     this.ctx.fillRect(this.margin, this.margin, this.width-this.margin*2, this.height-this.margin*2);
     this.ctx.stroke();
 
