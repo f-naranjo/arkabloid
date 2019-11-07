@@ -24,8 +24,6 @@ class Ball{
 
         
 draw(){
-    // this.ctx.fillStyle = 'rgb(211,222,230)';
-    // this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
 
     this.ctx.beginPath();
     this.ctx.arc(this.posX+this.height/2,this.posY+this.height/2, this.height/2,0,Math.PI*2)
@@ -33,11 +31,9 @@ draw(){
     this.ctx.fill();
     this.ctx.stroke()
     this.ctx.closePath()
-
 }
 
 move(){
-    
     if(this.posY + this.height> this.boundarys.bottom){
         this.vy = -this.vy
     }
@@ -57,7 +53,4 @@ move(){
     this.posX = this.posX + this.vx   
     this.posY = this.posY + this.vy 
 }
-
-
-
 }

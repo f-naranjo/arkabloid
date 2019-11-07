@@ -19,9 +19,15 @@ draw(framesCounter, livesCounter, bricksCounter, bricksLeft, ballPosX, ballPosY)
     this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
     this.ctx.fillText(`X: ${Math.floor(ballPosX)} Y: ${Math.floor(ballPosY)}`, this.width/2 - 40, 20);
 
+    this.ctx.font = "18px Arial";
+    this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    this.ctx.fillText(`♥`, 40, 20);
+
     this.ctx.font = "12px Arial";
     this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    this.ctx.fillText(`Lives: ${livesCounter}`, 40, 20);
+    this.ctx.fillText(`: ${livesCounter}`, 55, 20);
+
+  
 
     
 

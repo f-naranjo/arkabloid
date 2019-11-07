@@ -6,7 +6,7 @@ const Game = {
   fps: 60,
   framesCounter: 0,
   livesCounter: 0,
-  bricksCounter: 0,
+  bricksCounter: undefined,
   bricksLeft: 0,
   margin: undefined,
   margin2: undefined,
@@ -19,6 +19,17 @@ const Game = {
     SPACE: 32,
   },
   score: 0,
+  numberOfBricks : 3,
+  bricksRows : 1,
+  // confLevels = [
+  //   {numberOfBricks: 1, bricksRows: 1},
+  //   {numberOfBricks: 1, bricksRows: 2},
+  //   {numberOfBricks: 1, bricksRows: 3},
+  //   {numberOfBricks: 1, bricksRows: 4},
+  //   {numberOfBricks: 1, bricksRows: 5},
+  // ],
+  // level = confLevels[0]
+
 
   init: function () {
     this.canvas = document.getElementById('canvas');
@@ -37,36 +48,36 @@ const Game = {
     this.margin2 = this.margin / 2;
     this.playableWidth = this.width - this.margin
     this.playableHeight = this.height - this.margin
+    this.livesCounter = 3;
+    this.loadScreen = true;
     this.startStop();
-
+    this.reset()
+  
   },
 
   start: function () {
-    this.reset()
+    
+      clearInterval(this.intervalScreens)
+      this.interval = setInterval(() => {
+        this.framesCounter++;
+        this.clear();
+        this.drawAll();
+        this.moveAll();
 
+        this.isCollision();
+        this.clearBarrels();
+        this.clearBoosters();
+        this.checkStates();
 
+        if (this.framesCounter % 400 === 0 && this.framesCounter % 500 !== 0 && this.framesCounter % 600 !== 0) {
+          this.generateBarrels()
+        }
 
+        if (this.framesCounter > 1000) this.framesCounter = 0;
 
-    this.interval = setInterval(() => {
-      this.framesCounter++;
-
-
-      this.clear();
-      this.drawAll();
-      this.moveAll();
-
-      this.isCollision()
-      this.clearBarrels()
-      this.clearBoosters()
-      this.checkStates()
-
-
-      if (this.framesCounter % 400 === 0 && this.framesCounter % 500 !== 0 && this.framesCounter % 600 !== 0) {
-        this.generateBarrels()
-      }
-
-      if (this.framesCounter > 1000) this.framesCounter = 0;
-    }, 1000 / this.fps)
+        
+      }, 1000 / this.fps)
+    
   },
 
   reset: function () {
@@ -77,10 +88,18 @@ const Game = {
     this.ballFollowerX = new PosRef(this.ctx);
     this.playerFollowerX = new PosRef(this.ctx);
     this.gameInfo = new Gameinfo(this.ctx, this.width, this.height)
+    this.loadScreens = new AllScreens(this.ctx,this.width, this.height,this.background)
     this.barrels = []
     this.boosters = []
     this.generateBricks()
 
+  },
+  resetStage: function(){
+    this.briks = []
+    // this.numberOfBricks = ;
+    this.bricksRows = 4;
+    this.generateBricks();
+    this.start()
   },
 
   clear: function () {
@@ -101,7 +120,6 @@ const Game = {
   },
 
   moveAll: function () {
-
     this.player.move()
     this.ball.move()
     this.barrels.forEach(e => e.move())
@@ -110,8 +128,7 @@ const Game = {
 
   generateBricks: function () {
     //parametros básicos del nivel
-    this.numberOfBricks = 8;
-    this.bricksRows = 4;
+    
     this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
     this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
     this.brickHeight = 20;
@@ -138,6 +155,7 @@ const Game = {
     clearInterval(this.interval)
   },
 
+
   isCollision: function () {
 
     //colisiones con player V3
@@ -149,191 +167,219 @@ const Game = {
         this.ball.vy = -this.ball.vy
         if (this.ball.vx < 9.5) {
           if (this.ball.posX >= this.ball.posX - this.ball.vx) {
-            this.ball.vx = this.ball.vx * 0.9} else {
-            this.ball.vx = this.ball.vx * 1.06}
+            this.ball.vx = this.ball.vx * 0.9
+          } else {
+            this.ball.vx = this.ball.vx * 1.06
+          }
         }
         console.log(this.ball.vx)
         return false
       }
     }
-      if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4 &&
-        Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2) {
-        if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-          this.posCorrection()
-          this.ball.vy = -this.ball.vy
-          if (this.ball.vx < 9.5) {
-            if (this.ball.posX >= this.ball.posX - this.ball.vx) {
-              this.ball.vx = this.ball.vx * 0.95
-            } else {
-              this.ball.vx = this.ball.vx * 1.03
-            }
-
+    if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 4 &&
+      Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2) {
+      if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+        this.posCorrection()
+        this.ball.vy = -this.ball.vy
+        if (this.ball.vx < 9.5) {
+          if (this.ball.posX >= this.ball.posX - this.ball.vx) {
+            this.ball.vx = this.ball.vx * 0.95
+          } else {
+            this.ball.vx = this.ball.vx * 1.03
           }
-          console.log(this.ball.vx)
-          return false
+
+        }
+        console.log(this.ball.vx)
+        return false
+      }
+    }
+
+
+    if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2 &&
+      Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4) {
+      if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+        this.posCorrection()
+        this.ball.vy = -this.ball.vy
+        if (this.ball.vx < 9.5) {
+          if (this.ball.posX >= this.ball.posX - this.ball.vx) {
+            this.ball.vx = this.ball.vx * 1.02
+          } else {
+            this.ball.vx = this.ball.vx * 0.95
+          }
+
+        }
+        console.log(this.ball.vx)
+        return false
+      }
+    }
+
+    if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4 &&
+      Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width) {
+      if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
+        this.posCorrection()
+        this.ball.vy = -this.ball.vy
+        if (this.ball.vx < 9.5) {
+          if (this.ball.posX >= this.ball.posX - this.ball.vx) {
+            this.ball.vx = this.ball.vx * 1.06
+          } else {
+            this.ball.vx = this.ball.vx * 0.9
+          }
+
+        }
+        console.log(this.ball.vx)
+        return false
+      }
+    }
+
+
+
+    //colisiones con bricks
+
+    this.bricks.forEach((brick, idx) => {
+      if (brick.posX + brick.width > this.ball.posX &&
+        this.ball.posX + this.ball.width > brick.posX &&
+        brick.posY + brick.height > this.ball.posY &&
+        this.ball.posY + this.ball.height > brick.posY) {
+        brick.resistance--
+        if (brick.hasBooster === 1) {
+          this.generateBooster(brick.posX, brick.posY, brick.width, brick.height);
+          brick.hasBooster = 0
+        }
+        if (brick.resistance === 0) {
+          this.ball.vy = -this.ball.vy
+          this.bricksCounter++
+          this.bricks.splice(idx, 1)
+          return true
+        }
+        this.ball.vy = -this.ball.vy
+      }
+    })
+
+
+    //colisiones con barrels v2
+
+    this.barrels.forEach((barrel, idx) => {
+      // if player is below barrel
+      //right side
+      if (barrel.posY - 10 < this.player.posY) {
+        if (this.player.posX < barrel.posX + barrel.width &&
+          this.player.posX + this.player.width > barrel.width + barrel.posX) {
+          this.player.posX = barrel.posX + barrel.width
+        }
+        //left side
+        if (this.player.posX + this.player.width > barrel.posX && this.player.posX < barrel.posX) {
+          this.player.posX = this.player.posX - this.player.vx
+        }
+
+      }
+      //if player is above barrel
+      if (barrel.posY >= this.player.posY + this.player.height &&
+        barrel.posY < this.player.posY + this.player.height * 2 &&
+        barrel.posX < this.player.posX + this.player.width &&
+        barrel.width + barrel.posX > this.player.posX) {
+        this.player.isFloating = true
+        this.player.posY = barrel.posY - this.player.height - 2
+      } else this.player.isFloating = false
+
+    })
+
+
+    //colisiones con boosters
+
+    this.boosters.forEach((booster, idx) => {
+      if (booster.posX + booster.width > this.player.posX && this.player.posX + this.player.width > booster.posX && booster.posY + booster.height > this.player.posY && this.player.posY + this.player.height > booster.posY) {
+        this.player.isHero = !this.player.isHero;
+        setTimeout(() => {
+          this.player.isHero = false;
+          this.player.posY = this.playableHeight - 50
+          this.player.posY0 = this.playableHeight - 50
+        }, 3000);
+
+        this.boosters.splice(idx, 1)
+      }
+    })
+
+    // Game WIN Game LOOSE
+    if (this.ball.posY + this.ball.height >= this.height - this.margin) {
+      this.livesCounter--
+      if (this.livesCounter < 0) {
+        this.gameOver()
+      }
+
+    }
+
+    if (this.bricks.length === 0) {
+      // alert("YOU WIN!!")
+      // location.reload();
+      // this.gameOver()
+    }
+
+  },
+
+  clearBarrels: function () {
+    this.barrels.forEach((barrel, idx) => {
+      if (barrel.posX > this.width) {
+        this.barrels.splice(idx, 1)
+      }
+    })
+  },
+
+  clearBoosters: function () {
+    this.boosters.forEach((booster, idx) => {
+      if (booster.posY > this.height) {
+        this.boosters.splice(idx, 1)
+      }
+    })
+  },
+
+  checkStates: function () {
+    this.player.checkState()
+    this.bricksLeft = this.bricks.length
+    if(this.bricks.length===0){
+      clearInterval(this.interval)
+      this.ifScreens("nextLevel")
+    }
+  },
+
+  posCorrection: function () {
+    this.ball.posY = this.player.posY - this.ball.height
+  },
+
+  startStop: function () {
+    this.switch = false;
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.keyCode === this.playerKeys.SPACE) {
+        if (this.switch === true) {
+          this.switch = !this.switch
+          this.ifScreens("nextLevel") 
+         
+         
+        } else {
+          this.switch = !this.switch
+          this.start()
+         
         }
       }
-    
+    })
 
-        if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width / 2 &&
-          Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 <= Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4) {
-          if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-            this.posCorrection()
-            this.ball.vy = -this.ball.vy
-            if (this.ball.vx < 9.5) {
-              if (this.ball.posX >= this.ball.posX - this.ball.vx) {
-                this.ball.vx = this.ball.vx * 1.02
-              } else {
-                this.ball.vx = this.ball.vx * 0.95
-              }
-
-            }
-            console.log(this.ball.vx)
-            return false
-          }
-        }
-
-          if (Math.min(this.ball.posX, this.ball.posX - this.ball.vx) > Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width * 3 / 4 &&
-            Math.min(this.ball.posX, this.ball.posX - this.ball.vx) + this.ball.width / 2 < Math.min(this.player.posX, this.player.posX - this.player.vx) + this.player.width) {
-            if (Math.min(this.ball.posY, this.ball.posY + this.ball.vy) + this.ball.height > this.player.posY) {
-              this.posCorrection()
-              this.ball.vy = -this.ball.vy
-              if (this.ball.vx < 9.5) {
-                if (this.ball.posX >= this.ball.posX - this.ball.vx) {
-                  this.ball.vx = this.ball.vx * 1.06
-                } else {
-                  this.ball.vx = this.ball.vx * 0.9
-                }
-
-              }
-              console.log(this.ball.vx)
-              return false
-            }
-          }
+  },
 
 
 
-            //colisiones con bricks
-
-            this.bricks.forEach((brick, idx) => {
-              if (brick.posX + brick.width > this.ball.posX &&
-                this.ball.posX + this.ball.width > brick.posX &&
-                brick.posY + brick.height > this.ball.posY &&
-                this.ball.posY + this.ball.height > brick.posY) {
-                brick.resistance--
-                if (brick.hasBooster === 1) {
-                  this.generateBooster(brick.posX, brick.posY, brick.width, brick.height);
-                  brick.hasBooster = 0
-                }
-                if (brick.resistance === 0) {
-                  this.ball.vy = -this.ball.vy
-                  this.bricksCounter++
-                  this.bricks.splice(idx, 1)
-                  return true
-                }
-                this.ball.vy = -this.ball.vy
-              }
-            })
+  //Screen Loads
+  ifScreens: function(screen) {
+    clearInterval(this.interval)
+    setTimeout(()=>{
+      clearInterval(this.intervalScreens)
+      this.resetStage()
+    },3000)
+    this.intervalScreens = setInterval(() => {
+        this.clear();
+        this.loadScreens.draw(screen);
+      }, 1000 / this.fps)
+  },
 
 
-            //colisiones con barrels v2
 
-            this.barrels.forEach((barrel, idx) => {
-              // if player is below barrel
-              //right side
-              if (barrel.posY - 10 < this.player.posY) {
-                if (this.player.posX < barrel.posX + barrel.width &&
-                  this.player.posX + this.player.width > barrel.width + barrel.posX) {
-                  this.player.posX = barrel.posX + barrel.width
-                }
-                //left side
-                if (this.player.posX + this.player.width > barrel.posX && this.player.posX < barrel.posX) {
-                  this.player.posX = this.player.posX - this.player.vx
-                }
-
-              }
-              //if player is above barrel
-              if (barrel.posY >= this.player.posY + this.player.height &&
-                barrel.posY < this.player.posY + this.player.height * 2 &&
-                barrel.posX < this.player.posX + this.player.width &&
-                barrel.width + barrel.posX > this.player.posX) {
-                this.player.isFloating = true
-                this.player.posY = barrel.posY - this.player.height - 2
-              } else this.player.isFloating = false
-
-            })
-
-
-            //colisiones con boosters
-
-            this.boosters.forEach((booster, idx) => {
-              if (booster.posX + booster.width > this.player.posX && this.player.posX + this.player.width > booster.posX && booster.posY + booster.height > this.player.posY && this.player.posY + this.player.height > booster.posY) {
-                this.player.isHero = !this.player.isHero;
-                setTimeout(() => {
-                  this.player.isHero = false;
-                  this.player.posY = this.playableHeight - 50
-                  this.player.posY0 = this.playableHeight - 50
-                }, 3000);
-
-                this.boosters.splice(idx, 1)
-              }
-            })
-
-            // Game WIN Game LOOSE
-            if (this.ball.posY + this.ball.height > this.height) {
-              // alert("YOU LOSE!!")
-              // location.reload();
-              // this.gameOver()
-            }
-
-            if (this.bricks.length === 0) {
-              // alert("YOU WIN!!")
-              // location.reload();
-              // this.gameOver()
-            }
-
-          },
-
-          clearBarrels: function () {
-            this.barrels.forEach((barrel, idx) => {
-              if (barrel.posX > this.width) {
-                this.barrels.splice(idx, 1)
-              }
-            })
-          },
-
-          clearBoosters: function () {
-            this.boosters.forEach((booster, idx) => {
-              if (booster.posY > this.height) {
-                this.boosters.splice(idx, 1)
-              }
-            })
-          },
-
-          checkStates: function() {
-            this.player.checkState()
-            this.bricksLeft = this.bricks.length
-          },
-
-          posCorrection: function(){
-            this.ball.posY = this.player.posY-this.ball.height
-          },
-
-          startStop: function () {
-            this.switch = false;
-            document.addEventListener('keydown', (e) => {
-              if (e.keyCode === this.playerKeys.SPACE) {
-                if (this.switch === true) {
-                  this.switch = !this.switch
-                  this.gameOver()
-                } else {
-                  this.switch = !this.switch
-                  this.start()
-                }
-              }
-            })
-
-          }
-
-
-        }
+}
