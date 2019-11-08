@@ -13,23 +13,27 @@ class Background {
     this.blue = 'rgba(47,88,170,1)'
     this.white50 = 'rgba(255,255,255,0.5)'
     this.white02 = 'rgba(255,255,255,0.1)'
+    this.white07 = 'rgba(255,255,255,0.07)'
     
     
   }
 
   draw() {
 
-    //General Colors and Frame
-    this.ctx.fillStyle = this.blue;
-    this.ctx.fillRect(0, 0, this.width, this.height);
-    this.ctx.stroke();
-  
-    this.ctx.fillStyle = 'rgba(255,255,255,0.07)';
-    this.ctx.fillRect(this.margin2, this.margin2, this.width-this.margin, this.height-this.margin);
+    this.ctx.fillStyle = this.white07;
+    this.ctx.fillRect(this.margin2, this.margin2, this.margin2, this.height-this.margin);
     this.ctx.stroke();
 
-    this.ctx.fillStyle = this.blue;
-    this.ctx.fillRect(this.margin, this.margin, this.width-this.margin*2, this.height-this.margin*2);
+    this.ctx.fillStyle = this.white07;
+    this.ctx.fillRect(this.margin2*2, this.margin2, this.width-this.margin*2, this.margin2);
+    this.ctx.stroke();
+
+    this.ctx.fillStyle = this.white07;
+    this.ctx.fillRect(this.width-this.margin, this.margin2, this.margin2, this.height - this.margin);
+    this.ctx.stroke();
+
+    this.ctx.fillStyle = this.white07;
+    this.ctx.fillRect(this.margin2*2, this.height-this.margin, this.width-this.margin*2, this.margin2);
     this.ctx.stroke();
 
     //Corner Lines

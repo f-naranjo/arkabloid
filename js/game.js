@@ -48,9 +48,9 @@ const Game = {
   },
 
   start: function () {
-
     clearInterval(this.intervalScreens)
     this.interval = setInterval(() => {
+      
       this.framesCounter++;
       this.clear();
       this.drawAll();
@@ -61,11 +61,13 @@ const Game = {
       this.clearBoosters();
       this.checkStates();
 
-      if (this.framesCounter % 400 === 0 && this.framesCounter % 500 !== 0 && this.framesCounter % 600 !== 0) {
+      
+
+      if (this.framesCounter % (1000*this.level - this.level*300) === 0) {
         this.generateBarrels()
       }
 
-      if (this.framesCounter > 1000) this.framesCounter = 0;
+      if (this.framesCounter > 20000) this.framesCounter = 0;
 
     }, 1000 / this.fps)
 
@@ -104,6 +106,8 @@ const Game = {
     this.barrels.forEach(e => e.draw());
     this.boosters.forEach(e => e.draw());
     this.gameInfo.draw(this.framesCounter, this.livesCounter, this.bricksCounter, this.bricksLeft, this.ball.posX, this.ball.posY);
+    // if(this.ball.posY + this.ball.height >= this.height - this.margin)
+    // {this.loadScreens.draw("liveLost")}
   },
 
   moveAll: function () {
@@ -117,7 +121,7 @@ const Game = {
     switch (level) {
       case 0:
         this.bricksRows = 2;
-        this.numberOfBricks = 5;
+        this.numberOfBricks = 4;
         this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
         this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
         this.brickHeight = 20;
@@ -143,7 +147,7 @@ const Game = {
         }
         break;
       case 2:
-        this.bricksRows = 5;
+        this.bricksRows = 4;
         this.numberOfBricks = 7;
         this.brickWidth = (this.playableWidth - (this.margin * 2)) / (this.numberOfBricks + 1.6);
         this.brickGutter = this.brickWidth / (this.numberOfBricks - 1);
@@ -190,7 +194,7 @@ const Game = {
             this.ball.vx = this.ball.vx * 1.06
           }
         }
-        console.log(this.ball.vx)
+        
         return false
       }
     }
@@ -207,7 +211,7 @@ const Game = {
           }
 
         }
-        console.log(this.ball.vx)
+       
         return false
       }
     }
@@ -226,7 +230,7 @@ const Game = {
           }
 
         }
-        console.log(this.ball.vx)
+      
         return false
       }
     }
@@ -244,7 +248,7 @@ const Game = {
           }
 
         }
-        console.log(this.ball.vx)
+       
         return false
       }
     }
@@ -370,6 +374,13 @@ const Game = {
 
 
   //Game control (Screens&Levels)
+  // preventKeydowns: function(){
+  //   document.addEventListener('keydown', (e) => {
+  //     if (e.keyCode !== 37 && e.keyCode !== 39 && e.keyCode !== 38) {
+  //       console.log("Entró")
+  //             return false}
+  //   })
+  // },
 
   gameControl: function (screen) {
     clearInterval(this.interval);
@@ -377,7 +388,7 @@ const Game = {
       case "welcome":
         document.addEventListener('keydown', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13) {
+          if (e.keyCode === 32) {
             this.resetStage(this.level)
             clearInterval(this.intervalScreens)
           }
@@ -394,7 +405,7 @@ const Game = {
       case "gameOver":
         document.addEventListener('keydown', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13) {
+          if (e.keyCode === 32) {
             clearInterval(this.interval);
             this.init()
           }
@@ -412,7 +423,7 @@ const Game = {
         this.level++
         document.addEventListener('keydown', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13) {
+          if (e.keyCode === 32) {
             clearInterval(this.interval);
             clearInterval(this.intervalScreens)
             this.resetStage(this.level)
@@ -430,7 +441,7 @@ const Game = {
       case "youWin":
         document.addEventListener('keydown', (e) => {
           e.preventDefault();
-          if (e.keyCode === 13) {
+          if (e.keyCode === 32) {
             clearInterval(this.interval);
             this.init()
           }
