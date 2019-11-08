@@ -91,15 +91,17 @@ class Player {
     document.addEventListener('keydown', (e) => {
         e.preventDefault();
         if (e.keyCode === 37) {
+            speed += speed*0.1
             this.keyState.keyLeft = true;
         }
         if (e.keyCode === 39) {
+            speed -= speed*0.1
             this.keyState.keyRight = true;
         }
         if (e.keyCode === 38) {
          
             if(this.posY < this.posY0){
-                return
+                return false;
             }
             this.posY -=this.vy;
             this.vy -= 10

@@ -46,7 +46,7 @@ class AllScreens {
         this.ctx.textAlign = "center";
         this.ctx.font = this.fontMed;
         this.ctx.fillStyle = 'rgba(255,255,255,1)';
-        this.ctx.fillText(`Press Enter to Start Again`, this.width / 2 , this.height / 2 + 50);
+        this.ctx.fillText(`Press spacebar to Start Again`, this.width / 2 , this.height / 2 + 50);
         break;
 
       case "nextLevel":
@@ -58,7 +58,7 @@ class AllScreens {
         this.ctx.textAlign = "center";
         this.ctx.font = this.fontMed;
         this.ctx.fillStyle = 'rgba(255,255,255,1)';
-        this.ctx.fillText(`Ready for the next level? Press Enter`, this.width / 2, this.height / 2 + 50);
+        this.ctx.fillText(`Ready for the next level? Press spacebar`, this.width / 2, this.height / 2 + 50);
         break;
 
       case "youWin":

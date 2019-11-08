@@ -316,8 +316,10 @@ const Game = {
           this.player.posY = this.playableHeight - 50
           this.player.posY0 = this.playableHeight - 50
         }, 3000);
-
+      // if(booster.posY > 600){
         this.boosters.splice(idx, 1)
+      // }
+       
       }
     })
 
